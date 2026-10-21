@@ -4,6 +4,7 @@
   --accent:#2F4FD0; --accent-ink:#FFFFFF; --tint:#E8EDFD;
   /* type */
   --font:-apple-system,BlinkMacSystemFont,"Inter",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --text-xs:12px; --text-sm:14px; --text-md:15px; --text-base:17px; --text-lg:20px; --text-xl:24px; --text-stat:32px;
   --text-h2:clamp(28px, 4vw, 38px); --text-h1:clamp(36px, 6vw, 62px);
   --lh-tight:1.05; --lh-head:1.15; --lh-body:1.6;
@@ -13,7 +14,7 @@
   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s7:28px; --s8:36px; --s9:48px; --s10:64px; --s11:84px;
   /* shape */
   --hair:1px; --rule:2px; --radius-sm:13px; --radius:18px; --radius-lg:22px; --radius-xl:28px; --pill:999px;
-  --icon:56px; --col-card:400px; --art-w:150px; --art-tilt:7deg; --art-lift:28px; --case-icon:72px; --faq-w:760px; --shot-peek:72%; --col-app:230px; --col-step:210px; --bar-h:60px; --measure:56ch; --page:1040px;
+  --icon:56px; --col-card:400px; --art-w:150px; --art-tilt:7deg; --art-lift:28px; --case-icon:72px; --faq-w:760px; --shot-peek:72%; --col-app:230px; --col-step:210px; --bar-h:60px; --measure:56ch; --page:1040px; --guide:760px; --term-bg:#0D1117; --term-ink:#E6EDF3;
 }
 @media (prefers-color-scheme:dark) {
   :root { --bg:#101216; --surface:#181B21; --ink:#F1F2F4; --soft:#A3A9B4; --line:#2A2E36;
@@ -133,3 +134,31 @@ section h2 { font-size:var(--text-h2); letter-spacing:var(--track-tight); line-h
 
 footer { padding:var(--s8) 0 var(--s10); color:var(--soft); font-size:var(--text-sm); }
 footer .wrap { display:flex; flex-wrap:wrap; gap:var(--s2) var(--s6); justify-content:space-between; }
+
+/* Tools teaser on the home page */
+.tool { display:grid; grid-template-columns:1fr auto; gap:var(--s5); align-items:center; background:var(--surface); border:var(--hair) solid var(--line); border-radius:var(--radius); padding:var(--s6); }
+.tool h3 { margin:0 0 var(--s2); font-size:var(--text-lg); letter-spacing:var(--track-snug); }
+.tool p { margin:0; color:var(--soft); max-width:70ch; }
+@media (max-width:620px) { .tool { grid-template-columns:1fr; } }
+
+/* Guide pages */
+.guide { max-width:var(--guide); }
+.guide h2 { font-size:var(--text-xl); letter-spacing:var(--track-snug); margin:var(--s9) 0 var(--s3); }
+.guide h3 { font-size:var(--text-base); margin:var(--s6) 0 var(--s2); }
+.guide p, .guide li { color:var(--soft); }
+.guide strong { color:var(--ink); }
+.guide ol, .guide ul { padding-left:var(--s6); }
+.guide li { margin-bottom:var(--s2); }
+.guide code { font-family:var(--mono); font-size:.9em; background:var(--tint); color:var(--ink); padding:0 var(--s1); border-radius:var(--s1); }
+.guide pre { font-family:var(--mono); font-size:var(--text-sm); line-height:var(--lh-body); background:var(--term-bg); color:var(--term-ink); padding:var(--s4) var(--s5); border-radius:var(--radius-sm); overflow-x:auto; margin:var(--s3) 0 var(--s5); }
+.guide pre code { background:none; color:inherit; padding:0; }
+.guide figure { margin:var(--s5) 0 var(--s7); }
+.guide figure img { width:100%; height:auto; display:block; border-radius:var(--radius-sm); }
+.guide figcaption { margin-top:var(--s2); font-size:var(--text-sm); color:var(--soft); }
+.note { background:var(--tint); border-radius:var(--radius-sm); padding:var(--s4) var(--s5); margin:var(--s5) 0; }
+.note p { margin:0; color:var(--ink); }
+.guide table { width:100%; border-collapse:collapse; font-size:var(--text-md); margin:var(--s3) 0 var(--s5); }
+.guide th, .guide td { text-align:left; padding:var(--s2) var(--s3) var(--s2) 0; border-bottom:var(--hair) solid var(--line); vertical-align:top; }
+.guide th { color:var(--ink); }
+.guide td { color:var(--soft); }
+.guide .actions { margin:var(--s6) 0; }
