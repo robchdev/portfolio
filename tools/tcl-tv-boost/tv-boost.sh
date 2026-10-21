@@ -241,6 +241,9 @@ if [ "$RESTORE" = 1 ]; then
       setting)  if [ "$value" = null ]; then run_tv settings delete global "$key"
                 else run_tv settings put global "$key" "$value"; fi
                 say "  setting $key -> $value" ;;
+      secure)   if [ "$value" = null ]; then run_tv settings delete secure "$key"
+                else run_tv settings put secure "$key" "$value"; fi
+                say "  setting $key -> $value" ;;
       disabled) run_tv pm enable "$key"; say "  re-enabled $key" ;;
       home)     run_tv cmd package set-home-activity --user 0 "$key"; say "  home -> $key" ;;
     esac
@@ -348,25 +351,28 @@ if [ "$DO_LAUNCHER" = 1 ]; then
     COMP=${COMP:-$LAUNCHER_PKG/.ui.home.MainActivity}
     note "home $OLD_HOME"
     run_tv cmd package set-home-activity --user 0 "$COMP"
-    # The old home keeps eating RAM unless it is disabled; never touch a protected one.
-    case "$OLD_HOME_PKG" in ''|android|com.android.tv.settings) OLD_HOME_PKG="" ;; esac
-    if [ -n "$OLD_HOME_PKG" ] && ! is_protected "$OLD_HOME_PKG" && is_enabled "$OLD_HOME_PKG"; then
-      note "disabled $OLD_HOME_PKG"
-      run_tv pm disable-user --user 0 "$OLD_HOME_PKG"
-    fi
+    # The old home stays enabled: on Google TV it also handles the remote's app buttons
+    # (Netflix, YouTube, Prime...). Projectivy's accessibility service sends Home to Projectivy.
+    A11Y_SVC="$LAUNCHER_PKG/$LAUNCHER_PKG.services.ProjectivyAccessibilityService"
+    A11Y_OLD=$(sh_tv settings get secure enabled_accessibility_services)
+    case "$A11Y_OLD" in
+      *"$A11Y_SVC"*) ;;
+      *) note "secure enabled_accessibility_services $A11Y_OLD"
+         note "secure accessibility_enabled $(sh_tv settings get secure accessibility_enabled)"
+         if [ -z "$A11Y_OLD" ] || [ "$A11Y_OLD" = null ]; then A11Y_NEW=$A11Y_SVC; else A11Y_NEW="$A11Y_OLD:$A11Y_SVC"; fi
+         run_tv settings put secure enabled_accessibility_services "$A11Y_NEW"
+         run_tv settings put secure accessibility_enabled 1 ;;
+    esac
     if [ "$DRY_RUN" = 0 ]; then
       sh_tv input keyevent KEYCODE_HOME; sleep 3
       if resumed_activity | grep -q "$LAUNCHER_PKG"; then
         say "  Projectivy is now the home screen."
       else
-        say "  Another app took the Home button back: undoing the launcher change for safety."
-        [ -n "$OLD_HOME_PKG" ] && run_tv pm enable "$OLD_HOME_PKG"
-        run_tv cmd package set-home-activity --user 0 "$OLD_HOME"
-        run_tv input keyevent KEYCODE_HOME
-        say "  Tip: open Projectivy > Settings and turn on its option to override the current launcher."
+        say "  The old home screen still answers the Home button. On the TV open"
+        say "  Projectivy > Settings > General and turn on \"Override current launcher\"."
       fi
     else
-      say "  [dry-run] would verify the home screen and undo it if Projectivy does not open"
+      say "  [dry-run] would check that Home opens Projectivy"
     fi
   fi
 fi
