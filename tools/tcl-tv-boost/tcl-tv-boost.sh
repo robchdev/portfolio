@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# tcl-tv-boost — speed up a slow TCL Android TV / Google TV over ADB.
+# tv-boost — speed up a slow Android TV / Google TV over ADB (TCL, Sony, Xiaomi,
+# Philips, Hisense, Nvidia Shield, Chromecast and most other brands).
 #
-#   ./tcl-tv-boost.sh <TV_IP> [--launcher] [--dry-run] [-y]
-#   ./tcl-tv-boost.sh <TV_IP> --restore [backup-file]
+#   ./tv-boost.sh <TV_IP> --scan                 show what would change, touch nothing
+#   ./tv-boost.sh <TV_IP> [--launcher] [--dry-run] [-y]
+#   ./tv-boost.sh <TV_IP> --restore [backup-file]
 #
 # Every change is written to a backup file first, so --restore puts the TV
 # back exactly as it was. Nothing is uninstalled: apps are only disabled.
@@ -10,40 +12,155 @@
 
 set -u
 
-# Packages to disable. Edit freely: delete a line to keep that app.
-# Only packages that exist and are enabled on your TV are touched.
-BLOAT_PACKAGES="
-com.tcl.bi                          # TCL usage analytics
-com.tcl.smartalexa                  # Alexa integration
-com.tcl.usercenter                  # TCL account
-com.tcl.MultiScreenInteraction_TV   # TCL phone mirroring app
-com.tcl.esticker                    # on-screen stickers/ads
-com.tcl.notereminder                # TCL reminders
-com.tcl.gamebar                     # game overlay
-com.tcl.messagebox                  # TCL promo messages
-com.tcl.overseasappshow             # app recommendations
-com.tcl.copydatatotv                # phone-to-TV data copy
-com.google.android.play.games       # Google Play Games
-com.google.android.videos           # Google TV / Play Movies
-com.android.messaging               # SMS app (useless on a TV)
-com.android.camera2                 # camera app (useless on a TV)
-tv.wuaki.apptv                      # Rakuten TV (preinstalled)
-com.google.android.apps.tv.dreamx   # Google screensaver
+# ---- what gets disabled --------------------------------------------------------
+# Only telemetry, ads, shop-demo and promo services. Each list comes from
+# debloat lists tested on real TVs (cleanyourtv, Universal Android Debloater).
+# A package is touched only if it exists and is enabled on your TV, so lists
+# for other brands do nothing on yours. Delete a line to keep that app.
+
+GOOGLE_COMMON="
+com.google.android.feedback                 # feedback reporting
+com.android.tv.feedbackconsent              # feedback consent screen
+com.google.android.tv.bugreportsender       # bug report uploader
+com.google.android.partnersetup             # partner/referral setup
+com.google.android.apps.tv.netoscope        # connectivity diagnostics
+com.android.printspooler                    # printing (no printers on a TV)
+com.android.dynsystem                       # developer system images
+com.android.adservices.api                  # ad services (Privacy Sandbox)
+com.android.ondevicepersonalization.services # ad personalization
+com.android.federatedcompute.services       # ad/ML training jobs
+com.google.android.play.games               # Play Games
+com.google.android.videos                   # Google TV Shop / Play Movies
+com.google.android.apps.tv.dreamx           # Google TV ambient screensaver
+com.google.android.backdrop                 # Android TV ambient screensaver
+com.android.messaging                       # SMS app (useless on a TV)
+com.android.camera2                         # camera app (useless on a TV)
+"
+
+TRACKING_AND_DEMO="
+tv.samba.ssm                                # Samba TV: recognises what is on screen
+tv.samba.ssm.ui
+tv.anoki.acr.anokiacroptin                  # Anoki screen recognition
+tv.anoki.acr.controller
+tv.inscape.tvclient.inscapeacr              # Inscape screen recognition
+com.smartdevice.acr.recommendation          # Skyworth/Coocaa screen recognition
+fusion.android.tv.demo                      # shop demo mode
+com.smartdevice.common.demonow              # shop demo mode
+com.smartdevice.epopplayer                  # shop promo player
+"
+
+TCL="
+com.tcl.bi                                  # analytics
+com.tcl.logkit                              # log upload
+com.tcl.esticker                            # shop energy-label sticker
+com.tcl.tv.tclhome_passive                  # pushes TCL content to the home screen
+com.tcl.waterfall.overseas                  # TCL Channel promo browser
+com.tcl.channelplus                         # ad-funded FAST channels
+com.tcl.overseasappshow                     # app recommendations
+com.tcl.repairguide                         # repair guide
+com.tcl.ocean.instructions                  # e-manual
+com.tcl.usercenter                          # TCL account nags
+com.tcl.smartalexa                          # Alexa skill
+com.tcl.notereminder                        # TCL reminders
+com.tcl.copydatatotv                        # phone-to-TV data copy
+com.apps.esticker                           # shop sticker (TCL/Thomson boards)
+com.apps.channels                           # S-Channel promo rows
+com.apps.function.gdpr                      # data-consent agent
+"
+
+SONY="
+com.sony.dtv.sonyselect                     # Sony Select promo tile
+com.sony.dtv.da.service                     # device agent
+com.qterics.da.product                      # device agent telemetry
+com.sony.dtv.multiscreendemo                # shop demo
+com.sony.dtv.demosupport                    # shop demo
+com.sony.dtv.demosystemsupport              # shop demo
+com.sony.dtv.demomode                       # shop demo
+com.sony.dtv.customersupport                # help tile
+com.sony.dtv.smarthelp                      # help
+com.sony.dtv.promos                         # promos
+com.sony.dtv.sonybugreportsys               # bug report uploader
+com.sony.dtv.imanual                        # i-Manual
+com.sony.dtv.discovery                      # Discover bar
+com.sony.dtv.bivlinfo                       # feeds Discover
+com.sony.dtv.sonytab                        # Sony tab on the Google TV home
+com.sony.dtv.notificationcenter             # Sony promo notifications
+com.sonyericsson.idd.agent                  # usage data
+"
+
+XIAOMI="
+com.miui.tv.analytics                       # analytics
+com.xiaomi.statistic                        # usage stats
+com.xm.webcontent                           # web promos
+com.mitv.tvhome.michannel                   # Mi Channel rows
+com.mitv.tvhome.mitvplus                    # Mi TV+ ad-funded channels
+com.mitv.tvhome.oemtab                      # ad row
+com.xiaomi.floatingframe                    # floating promo overlay
+com.xiaomi.mitv.handbook                    # handbook
+com.xiaomo.tv.milegal                       # legal notices
+com.mitv.download.service                   # background downloads
+com.xiaomi.android.tvsetup.partnercustomizer # installs partner apps at setup
+"
+
+PHILIPS="
+org.droidtv.demome                          # shop demo
+org.droidtv.nettvrecommender                # Top Picks promo row
+org.droidtv.recommendation                  # its backend
+org.droidtv.usagelogger                     # usage telemetry
+org.droidtv.candeebug                       # analytics uploader
+org.droidtv.gel                             # metrics collector
+org.droidtv.nettv.market                    # Smart TV Collection store (Play Store stays)
+"
+
+HISENSE="
+com.hisense.service.message                 # push messages
+com.hisense.evservice                       # screen recognition
+com.hisense.storemode                       # shop demo
+com.hisense.demonstrate                     # demo reels
+com.hisense.app.logreport                   # log reporter
+com.hisense.logupload                       # log upload
+com.hisense.platformreport                  # reporting
+com.hisense.business.ad                     # ads
+com.hisense.service.ad                      # ads
+"
+
+OTHERS="
+com.nvidia.feedback                         # Nvidia: feedback
+com.nvidia.diagtools                        # Nvidia: log collector
+com.nvidia.stats                            # Nvidia: usage stats
+com.smartdevice.recommendation              # Skyworth/Coocaa: promo rows
+com.smartdevice.leanbacklauncher.customizer # Skyworth: injects home rows
+com.smartdevice.recordactivation            # Skyworth: activation tracking
+com.Smartdevice.emanual                     # Skyworth/Panasonic: e-manual
+com.panasonic.demomode                      # Panasonic: shop demo
+com.haier.tvhousekeeper                     # Haier: cleaner
+com.haier.oemtabprovider                    # Haier: promo tab
+com.xgimi.bugreportsender                   # XGIMI: bug reports
+"
+
+# Never disabled, whatever the lists say: inputs, remote, updates, store, keyboard...
+PROTECTED="
+com.android.vending com.google.android.gms com.google.android.gsf com.android.location.fused
+com.android.tv.settings com.android.systemui com.android.packageinstaller com.android.providers.tv
+com.google.android.tungsten.setupwraith com.google.android.katniss com.google.android.apps.mediashell
+com.google.android.tv.remote.service com.google.android.tv.axel com.google.android.tvrecommendations
+com.tcl.tv com.tcl.tvinput com.tcl.suspension com.tcl.ttvs com.tcl.messagebox com.tcl.providers.config
+com.tcl.initsetup com.tcl.tcl_bt_rcu_service com.tcl.autopair com.tcl.partnercustomizer com.tcl.settings
+com.tcl.system.server com.tcl.systemserver com.tcl.guard com.tcl.useragreement com.tcl.dashboard
+com.sony.dtv.tvx com.sony.dtv.ecodashboard
 "
 
 ANIM_SCALE=0.5
 LAUNCHER_PKG=com.spocky.projengmenu            # Projectivy Launcher (free, Play Store)
-GOOGLE_LAUNCHER=com.google.android.apps.tv.launcherx
-SETUP_WRAITH=com.google.android.tungsten.setupwraith
 
-DRY_RUN=0; ASSUME_YES=0; DO_LAUNCHER=0; RESTORE=0; RESTORE_FILE=""; TARGET=""
+DRY_RUN=0; ASSUME_YES=0; DO_LAUNCHER=0; RESTORE=0; SCAN=0; RESTORE_FILE=""; TARGET=""
 
 say()  { printf '%s\n' "$*"; }
 step() { printf '\n== %s\n' "$*"; }
 die()  { printf 'Error: %s\n' "$*" >&2; exit 1; }
 
 usage() {
-  sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
   exit "${1:-0}"
 }
 
@@ -51,6 +168,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --launcher) DO_LAUNCHER=1 ;;
     --dry-run)  DRY_RUN=1 ;;
+    --scan)     SCAN=1; DRY_RUN=1 ;;
     -y|--yes)   ASSUME_YES=1 ;;
     --restore)  RESTORE=1
                 if [ $# -gt 1 ] && [ "${2#-}" = "$2" ]; then RESTORE_FILE=$2; shift; fi ;;
@@ -97,18 +215,22 @@ RELEASE=$(sh_tv getprop ro.build.version.release)
 say "Connected: $BRAND $MODEL, Android $RELEASE (SDK $SDK)"
 
 SAFE_ID=$(printf '%s' "$BRAND-$MODEL-$SERIAL" | tr -c 'A-Za-z0-9._-' '_')
-BACKUP_DIR="${TCL_BOOST_BACKUPS:-$HOME/.tcl-tv-boost}"
+BACKUP_DIR="${TV_BOOST_BACKUPS:-$HOME/.tv-boost}"
+OLD_BACKUP_DIR="$HOME/.tcl-tv-boost"   # backups made by tcl-tv-boost.sh
 
-pkg_enabled() { sh_tv pm list packages -e "$1" | grep -qx "package:$1"; }
-pkg_present() { sh_tv pm list packages "$1" | grep -qx "package:$1"; }
+ENABLED=$(sh_tv pm list packages -e | sed 's/^package://')
+is_enabled()   { printf '%s\n' "$ENABLED" | grep -qxF "$1"; }
+is_protected() { printf '%s\n' $PROTECTED | grep -qxF "$1"; }
+pkg_present()  { sh_tv pm list packages "$1" | grep -qx "package:$1"; }
 current_home() { sh_tv cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME | tail -1; }
 resumed_activity() { sh_tv dumpsys activity activities | grep -m1 -E 'mResumedActivity|topResumedActivity'; }
+names() { printf '%s\n' "$@" | sed 's/#.*//' | tr -s ' \t' '\n' | grep -v '^$'; }
 
 # ---- restore ------------------------------------------------------------------
 
 if [ "$RESTORE" = 1 ]; then
   if [ -z "$RESTORE_FILE" ]; then
-    RESTORE_FILE=$(ls -t "$BACKUP_DIR/$SAFE_ID"-*.backup 2>/dev/null | head -1)
+    RESTORE_FILE=$(ls -t "$BACKUP_DIR/$SAFE_ID"-*.backup "$OLD_BACKUP_DIR/$SAFE_ID"-*.backup 2>/dev/null | head -1)
   fi
   [ -n "$RESTORE_FILE" ] && [ -f "$RESTORE_FILE" ] || die "no backup found for this TV in $BACKUP_DIR"
   say "Restoring from $RESTORE_FILE"
@@ -130,12 +252,36 @@ EOF
   exit 0
 fi
 
-# ---- boost -----------------------------------------------------------------------
+# ---- plan ------------------------------------------------------------------------
 
-case "$BRAND" in *[Tt][Cc][Ll]*) ;; *)
-  say "Note: this is not a TCL. The script should be safe on any Android TV, but the list was tested on TCL."
-  confirm "Continue anyway?" || exit 0 ;;
-esac
+TO_DISABLE=""
+for p in $(names "$GOOGLE_COMMON" "$TRACKING_AND_DEMO" "$TCL" "$SONY" "$XIAOMI" "$PHILIPS" "$HISENSE" "$OTHERS"); do
+  is_enabled "$p" && ! is_protected "$p" && TO_DISABLE="$TO_DISABLE $p"
+done
+# Play auto-install configs: they only reinstall partner apps after an update or reset.
+for p in $(printf '%s\n' "$ENABLED" | grep '^android\.autoinstalls\.config\.'); do
+  TO_DISABLE="$TO_DISABLE $p"
+done
+
+if [ "$SCAN" = 1 ]; then
+  step "Would be disabled on this TV"
+  if [ -n "$TO_DISABLE" ]; then for p in $TO_DISABLE; do say "  $p"; done
+  else say "  (nothing from the lists)"; fi
+  step "Other system apps worth a look (NOT touched by the script)"
+  KNOWN=" $TO_DISABLE $(names "$GOOGLE_COMMON" "$TRACKING_AND_DEMO" "$TCL" "$SONY" "$XIAOMI" "$PHILIPS" "$HISENSE" "$OTHERS" | tr '\n' ' ') "
+  sh_tv pm list packages -s -e | sed 's/^package://' | sort | while read -r p; do
+    case "$KNOWN" in *" $p "*) continue ;; esac
+    is_protected "$p" && continue
+    if printf '%s' "$p" | grep -qiE 'analytic|statist|telemetr|usage|logger|logkit|logreport|logupload|bugreport|feedback|report|acr|samba|demo|promo|recommend|advert|\.ad\.|adservice|sticker|emanual|manual|handbook|helpguide|smarthelp|partnercustom|autoinstall|market|appstore|channelplus|fast'; then
+      say "  $p"
+    fi
+  done
+  say ""
+  say "  Brand: $BRAND $MODEL. If your brand is missing from the lists, send this output"
+  say "  (and what each app does, if you know) to roberto.chiarelladev@gmail.com."
+  say "  Nothing was changed."
+  exit 0
+fi
 
 BACKUP=/dev/null
 if [ "$DRY_RUN" = 0 ]; then
@@ -150,16 +296,12 @@ FREE_BEFORE=$(sh_tv cat /proc/meminfo | awk '/MemAvailable/ {print int($2/1024)}
 step "Plan"
 say "  - animations: ${ANIM_SCALE}x (snappier menus)"
 [ "${SDK:-0}" -ge 30 ] && say "  - freeze cached background apps (saves RAM)"
-TO_DISABLE=""
-for p in $(printf '%s\n' "$BLOAT_PACKAGES" | sed 's/#.*//'); do
-  pkg_enabled "$p" && TO_DISABLE="$TO_DISABLE $p"
-done
 if [ -n "$TO_DISABLE" ]; then
   say "  - disable these apps:"; for p in $TO_DISABLE; do say "      $p"; done
 else
-  say "  - no listed apps to disable (already done, or not on this TV)"
+  say "  - no listed apps to disable (already done, or none on this TV)"
 fi
-[ "$DO_LAUNCHER" = 1 ] && say "  - replace the Google home screen with Projectivy Launcher"
+[ "$DO_LAUNCHER" = 1 ] && say "  - replace the home screen with Projectivy Launcher"
 say "  - optimize installed apps (background compile)"
 [ "$DRY_RUN" = 1 ] && say "  (dry run: nothing will be changed)"
 confirm "Apply?" || exit 0
@@ -177,9 +319,13 @@ say "  ok"
 
 step "Disabling apps"
 for p in $TO_DISABLE; do
-  note "disabled $p"
-  run_tv pm disable-user --user 0 "$p"
-  [ "$DRY_RUN" = 1 ] || say "  $p"
+  if [ "$DRY_RUN" = 1 ]; then
+    run_tv pm disable-user --user 0 "$p"
+  elif sh_tv pm disable-user --user 0 "$p" | grep -q 'disabled'; then
+    note "disabled $p"; say "  $p"
+  else
+    say "  $p: refused by the system, skipped"
+  fi
 done
 
 if [ "$DO_LAUNCHER" = 1 ]; then
@@ -191,33 +337,33 @@ if [ "$DO_LAUNCHER" = 1 ]; then
       printf '  Press Enter here when it is installed... '; read -r _
     fi
   fi
+  OLD_HOME=$(current_home)
+  OLD_HOME_PKG=${OLD_HOME%%/*}
   if [ "$DRY_RUN" = 0 ] && ! pkg_present "$LAUNCHER_PKG"; then
-    say "  Projectivy is not installed: skipping the launcher step (the Google home stays)."
+    say "  Projectivy is not installed: skipping the launcher step (your home screen stays)."
+  elif [ "$OLD_HOME_PKG" = "$LAUNCHER_PKG" ]; then
+    say "  Projectivy is already the home screen."
   else
     COMP=$(sh_tv cmd package query-activities --components -a android.intent.action.MAIN -c android.intent.category.HOME | grep -m1 "^$LAUNCHER_PKG/")
     COMP=${COMP:-$LAUNCHER_PKG/.ui.home.MainActivity}
-    note "home $(current_home)"
+    note "home $OLD_HOME"
     run_tv cmd package set-home-activity --user 0 "$COMP"
-    if pkg_enabled "$GOOGLE_LAUNCHER"; then
-      note "disabled $GOOGLE_LAUNCHER"
-      run_tv pm disable-user --user 0 "$GOOGLE_LAUNCHER"
+    # The old home keeps eating RAM unless it is disabled; never touch a protected one.
+    case "$OLD_HOME_PKG" in ''|android|com.android.tv.settings) OLD_HOME_PKG="" ;; esac
+    if [ -n "$OLD_HOME_PKG" ] && ! is_protected "$OLD_HOME_PKG" && is_enabled "$OLD_HOME_PKG"; then
+      note "disabled $OLD_HOME_PKG"
+      run_tv pm disable-user --user 0 "$OLD_HOME_PKG"
     fi
     if [ "$DRY_RUN" = 0 ]; then
       sh_tv input keyevent KEYCODE_HOME; sleep 3
-      # Some Google TV builds send HOME to a setup "recovery" screen once launcherx is gone.
-      if resumed_activity | grep -q "$SETUP_WRAITH" && pkg_enabled "$SETUP_WRAITH"; then
-        note "disabled $SETUP_WRAITH"
-        run_tv pm disable-user --user 0 "$SETUP_WRAITH"
-        run_tv cmd package set-home-activity --user 0 "$COMP"
-        sh_tv input keyevent KEYCODE_HOME; sleep 3
-      fi
       if resumed_activity | grep -q "$LAUNCHER_PKG"; then
         say "  Projectivy is now the home screen."
       else
-        say "  Projectivy did not take over: undoing the launcher changes for safety."
-        run_tv pm enable "$GOOGLE_LAUNCHER"
-        pkg_present "$SETUP_WRAITH" && run_tv pm enable "$SETUP_WRAITH"
+        say "  Another app took the Home button back: undoing the launcher change for safety."
+        [ -n "$OLD_HOME_PKG" ] && run_tv pm enable "$OLD_HOME_PKG"
+        run_tv cmd package set-home-activity --user 0 "$OLD_HOME"
         run_tv input keyevent KEYCODE_HOME
+        say "  Tip: open Projectivy > Settings and turn on its option to override the current launcher."
       fi
     else
       say "  [dry-run] would verify the home screen and undo it if Projectivy does not open"
