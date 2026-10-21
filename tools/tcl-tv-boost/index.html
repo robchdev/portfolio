@@ -10,7 +10,7 @@
 <meta property="og:title" content="TV TCL lenta? Script gratis per renderla veloce">
 <meta property="og:description" content="Dal computer, via Wi-Fi: disattiva le app inutili, velocizza i menu, launcher leggero opzionale. Si annulla tutto con un comando, senza root.">
 <meta property="og:url" content="https://robchdev.github.io/portfolio/tools/tcl-tv-boost/">
-<meta property="og:image" content="https://robchdev.github.io/portfolio/tools/tcl-tv-boost/img/shot-apply.png">
+<meta property="og:image" content="https://robchdev.github.io/portfolio/tools/tcl-tv-boost/img/hero.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../../apps/6822468442.png">
 <link rel="stylesheet" href="../../style.css">
@@ -30,143 +30,189 @@
 </header>
 
 <main id="top">
+
+<div class="wrap tool-hero">
+  <div>
+    <span class="kicker"><span lang="en">Free tool · beta</span><span lang="it">Strumento gratis · beta</span></span>
+    <h1 lang="en">Make a slow TCL TV fast again</h1>
+    <h1 lang="it">Rendi di nuovo veloce la tua TV TCL</h1>
+    <p class="lead" lang="en">Budget TCL Android TVs have 2 GB of RAM and a pile of preinstalled extras that keep it full. This free script, run from your computer over Wi-Fi, switches them off, speeds up the menus and can swap the heavy Google home screen for a light one.</p>
+    <p class="lead" lang="it">Le TV TCL Android economiche hanno 2 GB di RAM e tanti extra preinstallati che la tengono sempre piena. Questo script gratuito, lanciato dal computer via Wi-Fi, li spegne, rende i menu più rapidi e può sostituire la pesante Home di Google con una leggera.</p>
+    <div class="actions">
+      <a class="btn primary" href="tcl-tv-boost.sh" download><span lang="en">Download free</span><span lang="it">Scarica gratis</span></a>
+      <a class="btn ghost" href="#guide"><span lang="en">How it works</span><span lang="it">Come funziona</span></a>
+    </div>
+    <ul class="perks">
+      <li lang="en"><strong>No root, nothing uninstalled.</strong> Apps are only switched off.</li>
+      <li lang="it"><strong>Niente root, niente disinstallato.</strong> Le app vengono solo spente.</li>
+      <li lang="en"><strong>One command undoes everything.</strong> A backup is saved first.</li>
+      <li lang="it"><strong>Un comando annulla tutto.</strong> Prima salva un backup.</li>
+      <li lang="en"><strong>Netflix, YouTube, HDMI, TV channels:</strong> untouched.</li>
+      <li lang="it"><strong>Netflix, YouTube, HDMI, canali TV:</strong> non vengono toccati.</li>
+    </ul>
+  </div>
+  <div class="art"><img src="img/hero.jpg" width="1536" height="1024" alt="" fetchpriority="high"></div>
+</div>
+
 <section>
-<div class="wrap guide">
-  <span class="kicker"><span lang="en">Free tool · beta</span><span lang="it">Strumento gratis · beta</span></span>
-  <h1 lang="en" style="font-size:var(--text-h2);letter-spacing:var(--track-tight);line-height:var(--lh-head)">Make a slow TCL TV fast again</h1>
-  <h1 lang="it" style="font-size:var(--text-h2);letter-spacing:var(--track-tight);line-height:var(--lh-head)">Rendi di nuovo veloce una TV TCL lenta</h1>
-
-  <p class="lead" lang="en">Budget TCL Android TVs ship with 2 GB of RAM and a pile of preinstalled services that keep it full. This free script, run from your computer over Wi-Fi, switches them off, speeds up the menus and, if you want, swaps the heavy Google home screen for a lightweight one.</p>
-  <p class="lead" lang="it">Le TV TCL Android economiche hanno 2 GB di RAM e un mucchio di servizi preinstallati che la tengono sempre piena. Questo script gratuito, lanciato dal computer via Wi-Fi, li spegne, rende i menu più rapidi e, se vuoi, sostituisce la pesante Home di Google con una leggera.</p>
-
-  <div class="actions">
-    <a class="btn primary" href="tcl-tv-boost.sh" download><span lang="en">Download the script (free)</span><span lang="it">Scarica lo script (gratis)</span></a>
-    <a class="btn ghost" href="#guide"><span lang="en">Read the guide</span><span lang="it">Leggi la guida</span></a>
+  <div class="wrap">
+    <figure class="wide-figure">
+      <img src="img/before-after.jpg" width="1536" height="1024" loading="lazy" alt="Illustration: on the left a TV cluttered with apps and an hourglass, on the right the same TV clean and fast">
+      <figcaption lang="en">Same changes, applied by hand on a TCL with Android TV 11: free RAM went from about 335 MB to about 650 MB after a restart.</figcaption>
+      <figcaption lang="it">Le stesse modifiche, fatte a mano su una TCL con Android TV 11: la RAM libera è passata da circa 335 MB a circa 650 MB dopo il riavvio.</figcaption>
+    </figure>
   </div>
+</section>
 
-  <ul>
-    <li lang="en"><strong>Nothing is uninstalled, no root.</strong> Apps are only disabled.</li>
-    <li lang="it"><strong>Non disinstalla niente, niente root.</strong> Le app vengono solo disattivate.</li>
-    <li lang="en"><strong>Full undo.</strong> Every change is saved to a backup first; one command puts the TV back exactly as it was.</li>
-    <li lang="it"><strong>Si annulla tutto.</strong> Ogni modifica viene prima salvata in un backup; un comando rimette la TV esattamente com'era.</li>
-    <li lang="en"><strong>Try before you touch.</strong> <code>--dry-run</code> shows every change without making any.</li>
-    <li lang="it"><strong>Prova prima di toccare.</strong> <code>--dry-run</code> mostra ogni modifica senza farne nessuna.</li>
-  </ul>
+<section id="guide">
+  <div class="wrap">
+    <h2 lang="en">Five steps, about 15 minutes</h2>
+    <h2 lang="it">Cinque passaggi, circa 15 minuti</h2>
+    <p class="sub" lang="en">You need a computer (Mac, Linux or Windows) on the same Wi-Fi as the TV, and the remote.</p>
+    <p class="sub" lang="it">Ti servono un computer (Mac, Linux o Windows) sulla stessa Wi-Fi della TV, e il telecomando.</p>
 
-  <div class="note">
-    <p lang="en"><strong>Beta.</strong> The same changes, applied by hand on a TCL with Android TV 11, took free RAM from about 335 MB to about 650 MB after a restart. The script itself is new and has been tested on a simulated TV, not yet on many real ones: start with <code>--dry-run</code>, and tell me how it went.</p>
-    <p lang="it"><strong>Beta.</strong> Le stesse modifiche, fatte a mano su una TCL con Android TV 11, hanno portato la RAM libera da circa 335 MB a circa 650 MB dopo il riavvio. Lo script invece è nuovo ed è stato provato su una TV simulata, non ancora su tante TV vere: parti con <code>--dry-run</code> e fammi sapere come è andata.</p>
-  </div>
+    <div class="stepcards">
+      <article class="stepcard">
+        <img src="img/step-adb.jpg" width="1536" height="1024" loading="lazy" alt="">
+        <div>
+          <span class="num"><span lang="en">Step</span><span lang="it">Passo</span></span>
+          <h3 lang="en">Install adb on your computer</h3>
+          <h3 lang="it">Installa adb sul computer</h3>
+          <p lang="en">adb is Google's free tool for talking to Android devices.</p>
+          <p lang="it">adb è lo strumento gratuito di Google per comunicare con i dispositivi Android.</p>
+          <ul>
+            <li><strong>Mac:</strong> <span lang="en">with <a href="https://brew.sh">Homebrew</a>:</span><span lang="it">con <a href="https://brew.sh">Homebrew</a>:</span> <code>brew install android-platform-tools</code></li>
+            <li><strong>Linux:</strong> <code>sudo apt install adb</code></li>
+            <li><strong>Windows:</strong> <span lang="en">install <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a>, then</span><span lang="it">installa <a href="https://learn.microsoft.com/it-it/windows/wsl/install">WSL</a>, poi</span> <code>sudo apt install adb</code></li>
+          </ul>
+        </div>
+      </article>
 
-  <figure>
-    <img src="img/shot-apply.png" alt="Terminal output of tcl-tv-boost applying the changes: plan, disabled apps, Projectivy set as home screen, backup path">
-    <figcaption lang="en">A full run with <code>--launcher</code>. The screenshots on this page come from the simulated TV used for testing.</figcaption>
-    <figcaption lang="it">Un'esecuzione completa con <code>--launcher</code>. Le schermate di questa pagina vengono dalla TV simulata usata per i test.</figcaption>
-  </figure>
+      <article class="stepcard">
+        <img src="img/step-developer.jpg" width="1536" height="1024" loading="lazy" alt="">
+        <div>
+          <span class="num"><span lang="en">Step</span><span lang="it">Passo</span></span>
+          <h3 lang="en">Turn on debugging on the TV</h3>
+          <h3 lang="it">Attiva il debug sulla TV</h3>
+          <ol>
+            <li lang="en"><strong>Settings › System › About</strong>: click <strong>Android TV OS build</strong> 7 times, until it says you are a developer.</li>
+            <li lang="it"><strong>Impostazioni › Sistema › Info</strong>: premi 7 volte su <strong>Build del sistema operativo Android TV</strong>, finché dice che sei sviluppatore.</li>
+            <li lang="en"><strong>Settings › System › Developer options</strong>: turn on <strong>USB debugging</strong> (and <strong>Network debugging</strong>, if listed).</li>
+            <li lang="it"><strong>Impostazioni › Sistema › Opzioni sviluppatore</strong>: attiva <strong>Debug USB</strong> (e <strong>Debug di rete</strong>, se c'è).</li>
+          </ol>
+          <p lang="en">On some models About is under <strong>Device Preferences</strong>.</p>
+          <p lang="it">Su alcuni modelli Info è in <strong>Preferenze dispositivo</strong>.</p>
+        </div>
+      </article>
 
-  <h2 lang="en">What it changes</h2>
-  <h2 lang="it">Cosa cambia</h2>
-  <table>
-    <tr><th lang="en">Change</th><th lang="it">Modifica</th><th lang="en">Why</th><th lang="it">Perché</th></tr>
-    <tr><td lang="en">Animations at 0.5x</td><td lang="it">Animazioni a 0,5x</td><td lang="en">Menus feel instant</td><td lang="it">I menu sembrano istantanei</td></tr>
-    <tr><td lang="en">Freeze cached background apps (Android 11+)</td><td lang="it">Congela le app in background (Android 11+)</td><td lang="en">Idle apps stop using CPU and RAM</td><td lang="it">Le app ferme smettono di usare CPU e RAM</td></tr>
-    <tr><td lang="en">Disable TCL and Google extras: analytics, Alexa, stickers, promo messages, game bar, screensaver…</td><td lang="it">Disattiva gli extra di TCL e Google: statistiche, Alexa, sticker, messaggi promozionali, game bar, salvaschermo…</td><td lang="en">Fewer services running all the time</td><td lang="it">Meno servizi sempre accesi</td></tr>
-    <tr><td lang="en"><code>--launcher</code>: Projectivy Launcher as home screen</td><td lang="it"><code>--launcher</code>: Projectivy Launcher come Home</td><td lang="en">The Google TV home is the heaviest app on the TV</td><td lang="it">La Home di Google TV è l'app più pesante della TV</td></tr>
-    <tr><td lang="en">Background app compile</td><td lang="it">Ottimizzazione delle app</td><td lang="en">Apps start faster</td><td lang="it">Le app si aprono prima</td></tr>
-  </table>
-  <p lang="en">Netflix, YouTube, Prime Video, the TV tuner and HDMI inputs are not touched. The app list sits at the top of the script: delete a line to keep that app.</p>
-  <p lang="it">Netflix, YouTube, Prime Video, il digitale terrestre e gli ingressi HDMI non vengono toccati. L'elenco delle app è in cima allo script: cancella una riga per tenere quell'app.</p>
+      <article class="stepcard">
+        <img src="img/step-network.jpg" width="1536" height="1024" loading="lazy" alt="">
+        <div>
+          <span class="num"><span lang="en">Step</span><span lang="it">Passo</span></span>
+          <h3 lang="en">Find the TV's address</h3>
+          <h3 lang="it">Trova l'indirizzo della TV</h3>
+          <p lang="en"><strong>Settings › Network &amp; Internet</strong>, select your Wi-Fi: the address looks like <code>192.168.1.50</code>. TV and computer must be on the same network.</p>
+          <p lang="it"><strong>Impostazioni › Rete e Internet</strong>, scegli la tua Wi-Fi: l'indirizzo è tipo <code>192.168.1.50</code>. TV e computer devono stare sulla stessa rete.</p>
+        </div>
+      </article>
 
-  <h2 id="guide" lang="en">Step-by-step guide</h2>
-  <h2 id="guide-it" lang="it">Guida passo passo</h2>
-
-  <h3 lang="en">1. Install adb on your computer</h3>
-  <h3 lang="it">1. Installa adb sul computer</h3>
-  <p lang="en">adb is Google's free tool to talk to Android devices.</p>
-  <p lang="it">adb è lo strumento gratuito di Google per comunicare con i dispositivi Android.</p>
-  <ul>
-    <li><strong>Mac:</strong> <span lang="en">install <a href="https://brew.sh">Homebrew</a>, then in Terminal:</span><span lang="it">installa <a href="https://brew.sh">Homebrew</a>, poi nel Terminale:</span> <code>brew install android-platform-tools</code></li>
-    <li><strong>Linux:</strong> <code>sudo apt install adb</code></li>
-    <li><strong>Windows:</strong> <span lang="en">install <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> (Ubuntu), then inside it</span><span lang="it">installa <a href="https://learn.microsoft.com/it-it/windows/wsl/install">WSL</a> (Ubuntu), poi al suo interno</span> <code>sudo apt install adb</code></li>
-  </ul>
-
-  <h3 lang="en">2. Turn on debugging on the TV</h3>
-  <h3 lang="it">2. Attiva il debug sulla TV</h3>
-  <ol>
-    <li lang="en">Open <strong>Settings › System › About</strong> and click <strong>Android TV OS build</strong> 7 times with the remote, until it says you are a developer.</li>
-    <li lang="it">Apri <strong>Impostazioni › Sistema › Info</strong> e premi 7 volte su <strong>Build del sistema operativo Android TV</strong> con il telecomando, finché dice che sei sviluppatore.</li>
-    <li lang="en">Go back to <strong>Settings › System › Developer options</strong> and turn on <strong>USB debugging</strong>. If you see <strong>Network debugging</strong> or <strong>ADB over network</strong>, turn it on too.</li>
-    <li lang="it">Torna in <strong>Impostazioni › Sistema › Opzioni sviluppatore</strong> e attiva <strong>Debug USB</strong>. Se vedi <strong>Debug di rete</strong> o <strong>ADB in rete</strong>, attiva anche quello.</li>
-  </ol>
-  <p lang="en">Menu names change slightly between models; on some TCLs, About is under <strong>Settings › Device Preferences</strong>.</p>
-  <p lang="it">I nomi dei menu cambiano un po' da modello a modello; su alcune TCL Info si trova in <strong>Impostazioni › Preferenze dispositivo</strong>.</p>
-
-  <h3 lang="en">3. Find the TV's IP address</h3>
-  <h3 lang="it">3. Trova l'indirizzo IP della TV</h3>
-  <p lang="en"><strong>Settings › Network &amp; Internet</strong>, select your Wi-Fi: the address looks like <code>192.168.1.50</code>. TV and computer must be on the same network.</p>
-  <p lang="it"><strong>Impostazioni › Rete e Internet</strong>, scegli la tua Wi-Fi: l'indirizzo è tipo <code>192.168.1.50</code>. TV e computer devono essere sulla stessa rete.</p>
-
-  <h3 lang="en">4. Download and try it without changing anything</h3>
-  <h3 lang="it">4. Scarica e prova senza cambiare niente</h3>
+      <article class="stepcard">
+        <img src="img/step-allow.jpg" width="1536" height="1024" loading="lazy" alt="">
+        <div>
+          <span class="num"><span lang="en">Step</span><span lang="it">Passo</span></span>
+          <h3 lang="en">Download and do a test run</h3>
+          <h3 lang="it">Scarica e fai una prova</h3>
+          <p lang="en">In the Terminal, using your TV's address:</p>
+          <p lang="it">Nel Terminale, con l'indirizzo della tua TV:</p>
 <pre><code>curl -LO https://robchdev.github.io/portfolio/tools/tcl-tv-boost/tcl-tv-boost.sh
 chmod +x tcl-tv-boost.sh
-./tcl-tv-boost.sh 192.168.1.50 --launcher --dry-run</code></pre>
-  <p lang="en">The first time, the TV shows <strong>Allow USB debugging?</strong> Tick <strong>Always allow</strong> and confirm. Then you get the plan:</p>
-  <p lang="it">La prima volta la TV chiede <strong>Consentire il debug USB?</strong> Spunta <strong>Consenti sempre</strong> e conferma. Poi vedi il piano:</p>
-  <figure>
-    <img src="img/shot-dryrun.png" alt="Terminal output of a dry run: the list of apps that would be disabled and the commands, with nothing changed">
-    <figcaption lang="en">Dry run: every command is shown, nothing is changed.</figcaption>
-    <figcaption lang="it">Prova a vuoto: mostra ogni comando, non cambia niente.</figcaption>
-  </figure>
+./tcl-tv-boost.sh 192.168.1.50 --dry-run</code></pre>
+          <p lang="en">The TV asks <strong>Allow USB debugging?</strong>: tick <strong>Always allow</strong> and press OK. The test run lists what would change, without touching anything.</p>
+          <p lang="it">La TV chiede <strong>Consentire il debug USB?</strong>: spunta <strong>Consenti sempre</strong> e premi OK. La prova elenca cosa cambierebbe, senza toccare niente.</p>
+        </div>
+      </article>
 
-  <h3 lang="en">5. Apply</h3>
-  <h3 lang="it">5. Applica</h3>
-<pre><code>./tcl-tv-boost.sh 192.168.1.50              # <span lang="en">apps and animations only</span><span lang="it">solo app e animazioni</span>
-./tcl-tv-boost.sh 192.168.1.50 --launcher   # <span lang="en">also the lightweight home screen</span><span lang="it">anche la Home leggera</span></code></pre>
-  <p lang="en">It shows the plan and asks <strong>Apply? [y/N]</strong>: type <code>y</code>. With <code>--launcher</code>, if Projectivy Launcher isn't installed the script opens its Play Store page on the TV: install it with the remote, then press Enter on the computer. The Google home is disabled only after Projectivy is confirmed as the new home screen; if it doesn't take over, the change is rolled back automatically.</p>
-  <p lang="it">Mostra il piano e chiede <strong>Apply? [y/N]</strong>: scrivi <code>y</code>. Con <code>--launcher</code>, se Projectivy Launcher non è installato lo script apre la sua pagina del Play Store sulla TV: installalo con il telecomando, poi premi Invio sul computer. La Home di Google viene disattivata solo dopo aver verificato che Projectivy sia la nuova Home; se non lo diventa, la modifica viene annullata da sola.</p>
-  <p lang="en">At the end it offers to restart the TV: say yes, the improvement shows fully after a restart.</p>
-  <p lang="it">Alla fine propone di riavviare la TV: rispondi sì, il miglioramento si vede del tutto dopo il riavvio.</p>
-
-  <h3 lang="en">6. Undo, whenever you want</h3>
-  <h3 lang="it">6. Annulla, quando vuoi</h3>
-<pre><code>./tcl-tv-boost.sh 192.168.1.50 --restore</code></pre>
-  <figure>
-    <img src="img/shot-restore.png" alt="Terminal output of the restore: every disabled app re-enabled and every setting put back">
-    <figcaption lang="en">Restore undoes every change, in reverse order.</figcaption>
-    <figcaption lang="it">Il ripristino annulla ogni modifica, in ordine inverso.</figcaption>
-  </figure>
-  <p lang="en">Backups live in <code>~/.tcl-tv-boost/</code>, one file per run. Keep that folder: it's what makes the undo exact.</p>
-  <p lang="it">I backup sono in <code>~/.tcl-tv-boost/</code>, un file per esecuzione. Non cancellare quella cartella: è quella che rende il ripristino esatto.</p>
-
-  <h2 id="faq" lang="en">FAQ</h2>
-  <h2 lang="it">Domande frequenti</h2>
-  <div class="faq">
-    <details><summary lang="en">Can it break my TV?</summary><summary lang="it">Può rompere la TV?</summary>
-      <p lang="en">It doesn't uninstall anything or touch system files, it only disables apps and changes three settings, all restorable. Even without the backup, a factory reset brings everything back.</p>
-      <p lang="it">Non disinstalla niente e non tocca i file di sistema: disattiva app e cambia tre impostazioni, tutto ripristinabile. Anche senza backup, un ripristino di fabbrica riporta tutto com'era.</p></details>
-    <details><summary lang="en">Does it void the warranty?</summary><summary lang="it">Fa decadere la garanzia?</summary>
-      <p lang="en">It uses only standard Developer options, no root and no unlocking. Still, use it at your own risk.</p>
-      <p lang="it">Usa solo le normali Opzioni sviluppatore, niente root e niente sblocchi. Resta comunque a tuo rischio.</p></details>
-    <details><summary lang="en">Does it work on other brands?</summary><summary lang="it">Funziona su altre marche?</summary>
-      <p lang="en">It should be safe on any Android TV or Google TV and asks before going on, but the app list is made for TCL, so on other brands it frees less.</p>
-      <p lang="it">Dovrebbe essere sicuro su qualsiasi Android TV o Google TV e chiede conferma prima di procedere, ma l'elenco delle app è fatto per TCL, quindi su altre marche libera meno.</p></details>
-    <details><summary lang="en">A system update brought the apps back.</summary><summary lang="it">Un aggiornamento ha riportato le app.</summary>
-      <p lang="en">It can happen: run the script again.</p>
-      <p lang="it">Può succedere: rilancia lo script.</p></details>
-    <details><summary lang="en">"cannot reach" error</summary><summary lang="it">Errore "cannot reach"</summary>
-      <p lang="en">Check the TV is on (not in standby), on the same Wi-Fi as the computer, that USB debugging is on and that you accepted the prompt on the TV. Some models need Network debugging too.</p>
-      <p lang="it">Controlla che la TV sia accesa (non in standby), sulla stessa Wi-Fi del computer, che il Debug USB sia attivo e che tu abbia accettato la richiesta sulla TV. Alcuni modelli vogliono anche il Debug di rete.</p></details>
+      <article class="stepcard">
+        <img src="img/hero.jpg" width="1536" height="1024" loading="lazy" alt="">
+        <div>
+          <span class="num"><span lang="en">Step</span><span lang="it">Passo</span></span>
+          <h3 lang="en">Apply, and restart the TV</h3>
+          <h3 lang="it">Applica e riavvia la TV</h3>
+<pre><code>./tcl-tv-boost.sh 192.168.1.50 --launcher</code></pre>
+          <p lang="en">Type <code>y</code> to confirm. <code>--launcher</code> also installs the light home screen <strong>Projectivy Launcher</strong> (free, Play Store): the script opens its page on the TV, you install it with the remote and press Enter. If it doesn't become the home screen, the change is undone on its own. Leave out <code>--launcher</code> to keep the Google home.</p>
+          <p lang="it">Scrivi <code>y</code> per confermare. <code>--launcher</code> mette anche la Home leggera <strong>Projectivy Launcher</strong> (gratis, Play Store): lo script apre la sua pagina sulla TV, la installi col telecomando e premi Invio. Se non diventa la Home, la modifica si annulla da sola. Senza <code>--launcher</code> resta la Home di Google.</p>
+          <p lang="en">Changed your mind? <code>./tcl-tv-boost.sh 192.168.1.50 --restore</code> puts everything back.</p>
+          <p lang="it">Ci hai ripensato? <code>./tcl-tv-boost.sh 192.168.1.50 --restore</code> rimette tutto com'era.</p>
+        </div>
+      </article>
+    </div>
   </div>
+</section>
 
-  <div class="actions">
-    <a class="btn primary" href="tcl-tv-boost.sh" download><span lang="en">Download the script</span><span lang="it">Scarica lo script</span></a>
-    <a class="btn ghost" href="mailto:roberto.chiarelladev@gmail.com?subject=tcl-tv-boost"><span lang="en">Feedback or a problem? Write to me</span><span lang="it">Feedback o problemi? Scrivimi</span></a>
+<section>
+  <div class="wrap guide">
+    <h2 lang="en">What exactly it changes</h2>
+    <h2 lang="it">Cosa cambia, nel dettaglio</h2>
+    <table>
+      <tr><th lang="en">Change</th><th lang="it">Modifica</th><th lang="en">Why</th><th lang="it">Perché</th></tr>
+      <tr><td lang="en">Animations at 0.5x</td><td lang="it">Animazioni a 0,5x</td><td lang="en">Menus feel instant</td><td lang="it">I menu sembrano istantanei</td></tr>
+      <tr><td lang="en">Freeze cached background apps (Android 11+)</td><td lang="it">Congela le app in background (Android 11+)</td><td lang="en">Idle apps stop using CPU and RAM</td><td lang="it">Le app ferme smettono di usare CPU e RAM</td></tr>
+      <tr><td lang="en">Switch off TCL and Google extras: analytics, Alexa, stickers, promo messages, game bar, screensaver…</td><td lang="it">Spegne gli extra di TCL e Google: statistiche, Alexa, sticker, messaggi promozionali, game bar, salvaschermo…</td><td lang="en">Fewer services always running</td><td lang="it">Meno servizi sempre accesi</td></tr>
+      <tr><td lang="en"><code>--launcher</code>: Projectivy as home screen</td><td lang="it"><code>--launcher</code>: Projectivy come Home</td><td lang="en">The Google TV home is the heaviest app on the TV</td><td lang="it">La Home di Google TV è l'app più pesante della TV</td></tr>
+      <tr><td lang="en">Background app compile</td><td lang="it">Ottimizzazione delle app</td><td lang="en">Apps open faster</td><td lang="it">Le app si aprono prima</td></tr>
+    </table>
+    <p lang="en">The app list is at the top of the script: delete a line to keep that app.</p>
+    <p lang="it">L'elenco delle app è in cima allo script: cancella una riga per tenere quell'app.</p>
+
+    <details class="expert">
+      <summary lang="en">For the curious: what you see in the Terminal</summary>
+      <summary lang="it">Per i curiosi: cosa vedi nel Terminale</summary>
+      <figure>
+        <img src="img/shot-dryrun.png" loading="lazy" alt="Terminal output of a test run: every command listed, nothing changed">
+        <figcaption lang="en">Test run (<code>--dry-run</code>).</figcaption><figcaption lang="it">Prova (<code>--dry-run</code>).</figcaption>
+      </figure>
+      <figure>
+        <img src="img/shot-apply.png" loading="lazy" alt="Terminal output of a full run: apps switched off, Projectivy set as home screen, backup saved">
+        <figcaption lang="en">Full run with <code>--launcher</code>.</figcaption><figcaption lang="it">Esecuzione completa con <code>--launcher</code>.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/shot-restore.png" loading="lazy" alt="Terminal output of the restore: every change undone">
+        <figcaption lang="en">Restore (<code>--restore</code>). These outputs come from the simulated TV used for testing.</figcaption><figcaption lang="it">Ripristino (<code>--restore</code>). Questi output vengono dalla TV simulata usata per i test.</figcaption>
+      </figure>
+    </details>
+
+    <div class="note">
+      <p lang="en"><strong>Beta.</strong> The script is new: it has been tested on a simulated TV, not yet on many real ones. Start with <code>--dry-run</code>, and tell me how it went.</p>
+      <p lang="it"><strong>Beta.</strong> Lo script è nuovo: è stato provato su una TV simulata, non ancora su tante TV vere. Parti con <code>--dry-run</code> e fammi sapere come è andata.</p>
+    </div>
+
+    <h2 id="faq" lang="en">FAQ</h2>
+    <h2 lang="it">Domande frequenti</h2>
+    <div class="faq">
+      <details><summary lang="en">Can it break my TV?</summary><summary lang="it">Può rompere la TV?</summary>
+        <p lang="en">It doesn't uninstall anything or touch system files: it switches off apps and changes three settings, all restorable. Even without the backup, a factory reset brings everything back.</p>
+        <p lang="it">Non disinstalla niente e non tocca i file di sistema: spegne app e cambia tre impostazioni, tutto ripristinabile. Anche senza backup, un ripristino di fabbrica riporta tutto com'era.</p></details>
+      <details><summary lang="en">Does it void the warranty?</summary><summary lang="it">Fa decadere la garanzia?</summary>
+        <p lang="en">It uses only the standard Developer options, no root and no unlocking. Still, use it at your own risk.</p>
+        <p lang="it">Usa solo le normali Opzioni sviluppatore, niente root e niente sblocchi. Resta comunque a tuo rischio.</p></details>
+      <details><summary lang="en">Does it work on other brands?</summary><summary lang="it">Funziona su altre marche?</summary>
+        <p lang="en">It should be safe on any Android TV or Google TV and asks before going on, but the app list is made for TCL, so elsewhere it frees less.</p>
+        <p lang="it">Dovrebbe essere sicuro su qualsiasi Android TV o Google TV e chiede conferma prima di procedere, ma l'elenco delle app è fatto per TCL, quindi altrove libera meno.</p></details>
+      <details><summary lang="en">A system update brought the apps back.</summary><summary lang="it">Un aggiornamento ha riportato le app.</summary>
+        <p lang="en">It can happen: run the script again.</p>
+        <p lang="it">Può succedere: rilancia lo script.</p></details>
+      <details><summary lang="en">"cannot reach" error</summary><summary lang="it">Errore "cannot reach"</summary>
+        <p lang="en">Check that the TV is on (not in standby) and on the same Wi-Fi, that USB debugging is on and that you accepted the prompt on the TV. Some models also need Network debugging.</p>
+        <p lang="it">Controlla che la TV sia accesa (non in standby) e sulla stessa Wi-Fi, che il Debug USB sia attivo e che tu abbia accettato la richiesta sulla TV. Alcuni modelli vogliono anche il Debug di rete.</p></details>
+    </div>
+
+    <div class="actions">
+      <a class="btn primary" href="tcl-tv-boost.sh" download><span lang="en">Download the script</span><span lang="it">Scarica lo script</span></a>
+      <a class="btn ghost" href="mailto:roberto.chiarelladev@gmail.com?subject=tcl-tv-boost"><span lang="en">Feedback or a problem? Write to me</span><span lang="it">Feedback o problemi? Scrivimi</span></a>
+    </div>
+    <p lang="en">MIT license. Not affiliated with TCL or Google. Projectivy Launcher is a free third-party app. Illustrations made with AI.</p>
+    <p lang="it">Licenza MIT. Non affiliato con TCL o Google. Projectivy Launcher è un'app gratuita di terzi. Illustrazioni create con l'AI.</p>
   </div>
-
-  <p lang="en">MIT license. Not affiliated with TCL or Google. Projectivy Launcher is a free third-party app on the Play Store.</p>
-  <p lang="it">Licenza MIT. Non affiliato con TCL o Google. Projectivy Launcher è un'app gratuita di terzi sul Play Store.</p>
-</div>
 </section>
 </main>
 
